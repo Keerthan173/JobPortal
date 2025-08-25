@@ -1,14 +1,19 @@
-"use client" // tells Next.js this is a client-side component (needed for useState).
+"use client" // tells Next.js this is a client-side component (needed for hooks).
 
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react" 
+
 export default function Login(){ 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const router = useRouter();
+
   const handleLogin = (e) =>{
     e.preventDefault();
     console.log("Email:", email, "Password:", password);
-    alert("Login form submitted(Frontend only)");
+    router.push("/dashboard");
   }
   
   return( 
@@ -34,6 +39,13 @@ export default function Login(){
         <button type="submit" className=" w-full bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"> 
           Login
         </button>
+
+        <p className="mt-5 text-sm text-center">
+          Don't have an account?{" "}
+          <Link href="/signup" className="text-blue-600 hover:underline">
+            Signup here
+          </Link>
+        </p>
       </form>
     </div>
   )
