@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function Signup() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -28,6 +29,17 @@ export default function Signup() {
         className="p-7 w-96 shadow-md bg-white rounded"
       >
         <h2 className="text-center font-bold m-4 text-2xl">Signup</h2>
+
+
+        <input
+          type="text"
+          placeholder="Enter Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="w-full p-2 mb-3 border rounded"
+          required
+        />
+
 
         <input
           type="email"
