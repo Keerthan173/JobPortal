@@ -111,6 +111,49 @@ app.post("/login", (req, res) => {
 
 
 
+// Get User Profile Route
+app.get("/profile/:id", (req, res) => {
+  const userId = req.params.id;
+
+  const sql = "SELECT id, name, email FROM users WHERE id=?";
+  db.query(sql, [userId], (err, results) => {
+    if (err) {
+      console.error("Error fetching profile:", err);
+      return res.status(500).json({ message: "Database error" });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json(results[0]);
+  });
+});
+
+
+
+// Update User Profile Route
+app.put("/profile/:id", (req, res) => {
+  const userId = req.params.id;
+  const { name, email } = req.body;
+
+  const sql = "UPDATE users SET name = ?, email = ? WHERE id = ?";
+  db.query(sql, [name, email, userId], (err, result) => {
+    if (err) {
+      console.error("Error updating profile:", err);
+      return res.status(500).json({ message: "Database error" });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({ message: "Profile updated successfully" });
+  });
+});
+
+
+
 // Starting the server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on the port ${PORT}`));
