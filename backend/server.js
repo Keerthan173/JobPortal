@@ -154,6 +154,36 @@ app.put("/profile/:id", (req, res) => {
 
 
 
+
+// Post a new Job
+app.post("/jobs", (req, res) => {
+  const { title, description, company, location } = req.body;
+
+  const sql = "INSERT INTO jobs (title, description, company, location) VALUES (?, ?, ?, ?)";
+  db.query(sql, [title, description, company, location], (err, result) => {
+    if (err) {
+      console.error("Error posting job:", err);
+      return res.status(500).json({ message: "Database error" });
+    }
+    res.status(201).json({ message: "Job posted successfully", jobId: result.insertId });
+  });
+});
+
+
+
+// Get all jobs
+app.get("/jobs", (req, res) => {
+  const sql = "SELECT * FROM jobs ORDER BY created_at DESC";
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error("Error fetching jobs:", err);
+      return res.status(500).json({ message: "Database error" });
+    }
+    res.status(200).json(results);
+  });
+});
+
+
 // Starting the server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on the port ${PORT}`));
