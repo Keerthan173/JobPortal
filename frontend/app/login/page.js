@@ -10,11 +10,40 @@ export default function Login(){
 
   const router = useRouter();
 
-  const handleLogin = (e) =>{
+  const handleLogin = async (e) =>{
     e.preventDefault();
-    console.log("Email:", email, "Password:", password);
-    router.push("/dashboard");
-  }
+
+    try{
+      // Send login request to backend
+      const res = await fetch("http://localhost:5000/login", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({email, password})
+      });
+
+      const data = await res.json();
+
+      if(!res.ok){
+        alert(data.message || "Login failed");
+        return;
+      }
+
+      // Save token in localStorage (or cookie later)
+      localStorage.setItem("token", data.token);
+
+      // Redirect based on role
+      if (data.user.role === "hr") {
+        router.push("/hr-dashboard");
+      } else if (data.user.role === "candidate") {
+        router.push("/candidate-dashboard");
+      } else {
+        router.push("/"); // fallback
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("Something went wrong");
+    }
+  };
   
   return( 
     <div className="flex items-center justify-center bg-gray-100 min-h-screen">

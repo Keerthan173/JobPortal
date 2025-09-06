@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -9,17 +9,34 @@ export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [role, setRole] = useState("candidate"); // default role
   const router = useRouter();
 
-  const handleSignup = (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
       alert("Passwords do not match!");
       return;
     }
-    console.log("Signup:", { email, password });
-    alert("Signup form submitted (Frontend only)");
-    router.push('/login');  // go to login after signup
+
+    try{
+      const res = await fetch("http://localhost:5000/signup", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({name, email, password, role})
+      });
+
+      const data = await res.json();
+      if(res.ok){
+        alert(data.message);
+        router.push('/login');  // go to login after signup
+      } else {
+        alert(data.message || "Signup failed");
+      }
+    } catch (error) {
+      console.error("Error during signup:", error);
+      alert("⚠️ Server error. Please try again later.");
+    }
   };
 
   return (
@@ -67,6 +84,15 @@ export default function Signup() {
           className="w-full p-2 mb-3 border rounded"
           required
         />
+
+        <select
+          value={role}
+          onChange={(e) => setRole(e.target.value)}
+          className="w-full p-2 mb-3 border rounded text-gray-500"
+        >
+          <option value="candidate">Candidate</option>
+          <option value="hr">HR</option>
+        </select>
 
         <button
           type="submit"

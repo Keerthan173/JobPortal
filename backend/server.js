@@ -44,15 +44,15 @@ app.get("/", (req,res)=>{     // Creates a GET API at http://localhost:5000/
 
 // User Signup Route
 app.post("/signup", async (req, res) => {             // async → lets us use await
-  const {name, email, password} = req.body;
+  const {name, email, password, role} = req.body;
 
   try{
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);     // await → pauses execution until Promise (like bcrypt.hash) is done
 
     // Insert into DB
-    const sql = "INSERT INTO users (name, email, password) VALUES (?, ?, ?)";
-    db.query(sql, [name, email, hashedPassword], (err, result) => {
+    const sql = "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)";
+    db.query(sql, [name, email, hashedPassword, role || "candidate"], (err, result) => {
       if(err){
         console.error("Error inserting the user:", err);
         return res.status(500).json({message: "Database error."});
@@ -60,7 +60,7 @@ app.post("/signup", async (req, res) => {             // async → lets us use a
       res.status(201).json({message: "User registered successfully!"});
     });
     /*
-      - [name, email, hasedPassword] replaces the ? placeholders in order.
+      - [name, email, hashedPassword, role] replaces the ? placeholders in order.
       - 500 Internal Server Error.
       - 201 Created.
     */
@@ -90,20 +90,52 @@ app.post("/login", (req, res) => {
 
     const user = results[0];
 
-    // Compare password
-    const isMatch = await bcrypt.compare(password, user.password);
-    if(!isMatch){
-      return res.status(401).json({message: "Invalid password"});
+    try{
+      // Compare password
+      const isMatch = await bcrypt.compare(password, user.password);
+      if(!isMatch){
+        return res.status(401).json({message: "Invalid password"});
+      }
+
+      // Generate JWT token
+      const token = jwt.sign(
+        { id: user.id, role: user.role},    // payload (data inside the token)
+        process.env.JWT_SECRET || "secret123",    // secret key for signing
+        { expiresIn: "1h"}                    // token expiry time
+      );
+
+      res.json({
+        message: "Login successful!",
+        token, // frontend will store this
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        }
+      });
+    } catch (error) {
+      console.error("Error during login:", error);
+      res.status(500).json({ message: "Login error." });
     }
+  });
+});
 
-    // Generate JWT token
-    const token = jwt.sign(
-      { id: user.id, email: user.email},    // payload (data inside the token)
-      process.env.JWT_SECRET || "secret123",    // secret key for signing
-      { expiresIn: "1h"}                    // token expiry time
-    );
 
-    res.status(200).json({ message: "Login successful", user: results, token });
+
+// Protected Route example
+app.get("/protected", (req, res) => {
+  const token = req.headers["authorization"]?.split(" ")[1]; // Bearer <token>
+
+  if(!token){
+    return res.status(401).json({message: "No token provided"});
+  }
+
+  // Verify token
+  jwt.verify(token, process.env.JWT_SECRET || "secret123", (err, decoded) => {
+    if(err) return res.status(403).json({message: "Invalid token"});
+
+    res.json({message: "Access granted", user: decoded});
   });
 });
 
