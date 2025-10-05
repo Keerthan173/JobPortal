@@ -8,10 +8,11 @@ export default function RootLayout({ children }) {
   Flow:
   Browser requests / → Next.js loads layout.js → inserts page.js content in <main> → shows Navbar + Homepage content + Footer.
   */
+
   return (
     <html lang="en">
       <body>
-        <Navbar/>
+        <Navbar />
         <main>{children}</main>
         <Footer/>
       </body>

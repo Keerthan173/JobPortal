@@ -12,8 +12,9 @@ const jwt = require("jsonwebtoken");      // Create tokens when users log in (so
 
 // Creating Express App
 const app = express();      // Creates an Express server instance
-app.use(cors());            // Allows frontend and backend (different ports) to communicate
+app.use(cors());
 app.use(express.json());    // Makes backend understand JSON data sent from frontend
+// app.use(): “Tell the Express app to use this middleware function for all requests."
 
 
 
@@ -55,7 +56,7 @@ app.post("/signup", async (req, res) => {             // async → lets us use a
     db.query(sql, [name, email, hashedPassword, role || "candidate"], (err, result) => {
       if(err){
         console.error("Error inserting the user:", err);
-        return res.status(500).json({message: "Database error."});
+        return res.status(500).json({message: "Database error - " + err.message});
       }
       res.status(201).json({message: "User registered successfully!"});
     });
@@ -147,7 +148,7 @@ app.get("/protected", (req, res) => {
 app.get("/profile/:id", (req, res) => {
   const userId = req.params.id;
 
-  const sql = "SELECT id, name, email FROM users WHERE id=?";
+  const sql = "SELECT id, name, email, role FROM users WHERE id=?";
   db.query(sql, [userId], (err, results) => {
     if (err) {
       console.error("Error fetching profile:", err);
@@ -214,6 +215,25 @@ app.get("/jobs", (req, res) => {
     res.status(200).json(results);
   });
 });
+
+
+
+// Delete User Route
+app.delete("/profile/:id", (req, res) => {
+  const userId = req.params.id;
+  const sql = "DELETE FROM users WHERE id=?";
+  db.query(sql, [userId], (err, result) => {
+    if (err) {
+      console.error("Error deleting user:", err);
+      return res.status(500).json({ message: "Database error" });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json({ message: "Account deleted successfully" });
+  });
+});
+
 
 
 // Starting the server

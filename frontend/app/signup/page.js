@@ -9,7 +9,7 @@ export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [role, setRole] = useState("candidate"); // default role
+  const [role, setRole] = useState("");
   const router = useRouter();
 
   const handleSignup = async (e) => {
@@ -47,7 +47,6 @@ export default function Signup() {
       >
         <h2 className="text-center font-bold m-4 text-2xl">Signup</h2>
 
-
         <input
           type="text"
           placeholder="Enter Name"
@@ -56,7 +55,6 @@ export default function Signup() {
           className="w-full p-2 mb-3 border rounded"
           required
         />
-
 
         <input
           type="email"
@@ -90,6 +88,7 @@ export default function Signup() {
           onChange={(e) => setRole(e.target.value)}
           className="w-full p-2 mb-3 border rounded text-gray-500"
         >
+          <option value="" disabled>Select Role</option>
           <option value="candidate">Candidate</option>
           <option value="hr">HR</option>
         </select>
