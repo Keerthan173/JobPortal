@@ -6,7 +6,7 @@ export default function JobsPage() {
   const [jobs, setJobs] = useState([]);
 
   useEffect(() => { // A React Hook that lets you run side effects(things outside the UI: fetching data, timers) 
-    fetch("http://localhost:5000/jobs") // calls backend API - By default, fetch() uses HTTP GET method.
+    fetch("../api/jobs") // calls backend API - By default, fetch() uses HTTP GET method.
     .then((res) => res.json()) // When the server responds, we get a Response object (res).
     // .json() converts the response body into actual JavaScript object/array.
     .then((data) => setJobs(data)) // updates React state → triggers re-render with new jobs list 

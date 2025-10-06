@@ -18,7 +18,7 @@ export default function ProfilePage() {
       return;
     }
 
-    fetch(`http://localhost:5000/profile/${userId}`)
+    fetch(`../api/profile/${userId}`)
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch profile");
         return res.json();

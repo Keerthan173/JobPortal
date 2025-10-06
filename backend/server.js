@@ -21,10 +21,10 @@ app.use(express.json());    // Makes backend understand JSON data sent from fron
 
 // MySQL Database Connection
 const db = mysql.createConnection({
-  host: process.env.DB_HOST || "localhost",
-  user: process.env.DB_USER || "root",
-  password: process.env.DB_PASSWORD || "",
-  database: process.env.DB_NAME || "jobportal",
+  host: "127.0.0.1",
+  user: "sampath",
+  password:  "Password@123",
+  database: "jobportal",
 });
 db.connect((err) => {
   if(err) throw err;
