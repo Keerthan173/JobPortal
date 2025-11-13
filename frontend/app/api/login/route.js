@@ -27,16 +27,32 @@ const loginHandler = async (req) => {
       { expiresIn: "1h" }
     );
 
-    return NextResponse.json({
-      message: "Login successful!",
-      token,
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      },
-    });
+    // return NextResponse.json({
+    //   message: "Login successful!",
+    //   token,
+    //   user: {
+    //     id: user.id,
+    //     name: user.name,
+    //     email: user.email,
+    //     role: user.role,
+    //   },
+    // });
+
+    const response=NextResponse.json({
+      message:"Login successful",
+      user:{id:user.id,name:user.name,email:user.email,role:user.role},
+    })
+
+    response.cookies.set({
+      name:"token",
+      value:token,
+      httpOnly:true,
+      maxAge:3600,
+      sameSite:"lax",
+      path:"/",
+      secure:process.env.NODE_ENV==="production",
+    })
+    return response;
   } catch (error) {
     console.error("Login error:", error);
     return NextResponse.json({ message: "Login error" }, { status: 500 });

@@ -3,11 +3,14 @@ import { NextResponse } from "next/server";
 
 export async function GET(req) {
   try {
-    const authHeader = req.headers.get("authorization");
-    const token = authHeader?.split(" ")[1];
+    const token = req.cookies.get("token")?.value;
+    console.log("token:",token)
 
     if (!token) {
-      return NextResponse.json({ message: "No token provided" }, { status: 401 });
+      return NextResponse.json(
+        { message: "No token provided" },
+        { status: 401 }
+      );
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET || "secret123");

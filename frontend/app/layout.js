@@ -1,6 +1,11 @@
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
-import './globals.css';
+import NavbarWrapper from "@/components/NavbarWrapper";
+import "./globals.css";
+export const metadata = {
+  title: "Your App",
+  description: "App description",
+};
 export default function RootLayout({ children }) {
   /*
   children → renders the content of whatever page is currently being viewed.
@@ -12,9 +17,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <Navbar />
+        <NavbarWrapper/>
         <main>{children}</main>
-        <Footer/>
+        {/* <Footer/> */}
       </body>
     </html>
   );

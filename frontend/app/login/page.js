@@ -26,14 +26,9 @@ export default function Login() {
         return;
       }
 
-      // ✅ Store token & user info
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("role", data.user.role);
-      localStorage.setItem("userId", data.user.id);
-
       // ✅ Role-based redirect
       switch (data.user.role) {
-        case "hr":
+        case "company":
           router.push("/hr-dashboard");
           break;
         case "candidate":
