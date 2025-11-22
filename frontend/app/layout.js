@@ -1,6 +1,8 @@
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import NavbarWrapper from "@/components/NavbarWrapper";
+import Providers from "./providers";
+import UserLoader from "@/components/UserLoader";
 import "./globals.css";
 export const metadata = {
   title: "Your App",
@@ -17,9 +19,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
+        <Providers>
         <NavbarWrapper/>
+        <UserLoader/>
         <main>{children}</main>
         {/* <Footer/> */}
+        </Providers>
       </body>
     </html>
   );

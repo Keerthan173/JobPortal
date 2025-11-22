@@ -1,17 +1,115 @@
 "use client";
 
-import { cookies } from "next/headers";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setUser } from "../redux/slices/userSlice";
 
-export default function CandidateProfile() {
+// Reusable input component
+const FormInput = ({
+  label,
+  type = "text",
+  placeholder,
+  disabled,
+  className,
+  value,
+  onChange,
+}) => (
+  <div className={className}>
+    <label className="block text-sm text-gray-400 mb-1">{label}</label>
+
+    {type === "textarea" ? (
+      <textarea
+        rows="2"
+        placeholder={placeholder}
+        value={value || ""}
+        onChange={onChange}
+        disabled={disabled}
+        className={`w-full p-2 rounded bg-gray-700 text-white border ${
+          disabled ? "border-gray-700" : "border-blue-500"
+        }`}
+      />
+    ) : (
+      <input
+        type={type}
+        placeholder={placeholder}
+        value={value || ""}
+        onChange={onChange}
+        disabled={disabled}
+        className={`w-full p-2 rounded bg-gray-700 text-white border ${
+          disabled ? "border-gray-700" : "border-blue-500"
+        }`}
+      />
+    )}
+  </div>
+);
+
+const ProfilePage = () => {
+  const dispatch = useDispatch();
+
+  // Redux user
+  
+  const user = useSelector((state) => state.user.user);
+  console.log(user);
+  const [role, setRole] = useState("candidate");
+  // prevent crash → safe empty object
+  const [formData, setFormData] = useState({});
+
+  const updateForm = (field, value) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  // Load fresh data into formData when Redux user changes
+  useEffect(() => {
+    if (user?.profile) {
+      setFormData(user.profile);
+       setRole(user.role);
+    }
+    console.log("form data",formData);
+  }, [user]);
+
   const [isEditing, setIsEditing] = useState(false);
+
+  // ---------------- SAVE PROFILE ----------------
+  const saveProfile = async () => {
+    try {
+      const res = await fetch("/api/profile", {
+        method: "PUT",
+        credentials: "include",
+        body: JSON.stringify(formData),
+      });
+
+      if (!res.ok) {
+        alert("Error updating profile");
+        return;
+      }
+
+      // Update redux with new data
+      dispatch(setUser({ ...user, profile: formData }));
+      setIsEditing(false);
+      alert("Profile updated!");
+    } catch (err) {
+      console.error("Update error:", err);
+    }
+  };
+
+  // ---------------- PREVENT WHITE SCREEN ----------------
+  if (!user) {
+    return (
+      <div className="text-white text-center p-10 text-xl">
+        Loading profile...
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-900 py-10 px-4">
-      <div className="max-w-4xl mx-auto bg-gray-800 rounded-2xl shadow-lg border border-gray-700 p-8">
-        {/* Header */}
+      <div className="max-w-5xl mx-auto bg-gray-800 rounded-2xl shadow-lg border border-gray-700 p-8">
+        {/* HEADER */}
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-white">Candidate Profile</h1>
+          <h1 className="text-3xl font-bold text-white">
+            {role === "candidate" ? "Candidate Profile" : "Company Profile"}
+          </h1>
+
           <button
             onClick={() => setIsEditing(!isEditing)}
             className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
@@ -20,142 +118,159 @@ export default function CandidateProfile() {
           </button>
         </div>
 
-        {/* Profile Form */}
+        {/* FORM ---------------------------- */}
         <form className="grid md:grid-cols-2 gap-6">
-          {/* Name */}
-          <div>
-            <label className="block text-sm text-gray-400 mb-1">Full Name</label>
-            <input
-              type="text"
-              placeholder="Enter your full name"
-              disabled={!isEditing}
-              className={`w-full p-2 rounded bg-gray-700 text-white border ${
-                isEditing ? "border-blue-500" : "border-gray-700"
-              }`}
-            />
-          </div>
+          {/* CANDIDATE FIELDS */}
+          {role === "candidate" && (
+            <>
+              <FormInput
+                label="Full Name"
+                value={formData.name}
+                onChange={(e) => updateForm("name", e.target.value)}
+                disabled={!isEditing}
+              />
 
-          {/* Email */}
-          <div>
-            <label className="block text-sm text-gray-400 mb-1">Email</label>
-            <input
-              type="email"
-              placeholder="Enter your email address"
-              disabled={!isEditing}
-              className={`w-full p-2 rounded bg-gray-700 text-white border ${
-                isEditing ? "border-blue-500" : "border-gray-700"
-              }`}
-            />
-          </div>
+              <FormInput
+                label="Email"
+                type="email"
+                value={user.email}
+                onChange={(e) => updateForm("email", e.target.value)}
+                disabled={!isEditing}
+              />
 
-          {/* Education */}
-          <div>
-            <label className="block text-sm text-gray-400 mb-1">Education</label>
-            <input
-              type="text"
-              placeholder="e.g. B.E in Computer Science"
-              disabled={!isEditing}
-              className={`w-full p-2 rounded bg-gray-700 text-white border ${
-                isEditing ? "border-blue-500" : "border-gray-700"
-              }`}
-            />
-          </div>
+              <FormInput
+                label="Education"
+                value={formData.education}
+                onChange={(e) => updateForm("education", e.target.value)}
+                disabled={!isEditing}
+              />
 
-          {/* Skills */}
-          <div>
-            <label className="block text-sm text-gray-400 mb-1">Skills</label>
-            <textarea
-              rows="2"
-              placeholder="e.g. React, Node.js, MySQL, Tailwind CSS"
-              disabled={!isEditing}
-              className={`w-full p-2 rounded bg-gray-700 text-white border ${
-                isEditing ? "border-blue-500" : "border-gray-700"
-              }`}
-            />
-          </div>
+              <FormInput
+                type="textarea"
+                label="Skills"
+                value={formData.skills}
+                onChange={(e) => updateForm("skills", e.target.value)}
+                disabled={!isEditing}
+              />
 
-          {/* Experience */}
-          <div className="md:col-span-2">
-            <label className="block text-sm text-gray-400 mb-1">Experience</label>
-            <textarea
-              rows="3"
-              placeholder="Briefly describe your experience"
-              disabled={!isEditing}
-              className={`w-full p-2 rounded bg-gray-700 text-white border ${
-                isEditing ? "border-blue-500" : "border-gray-700"
-              }`}
-            />
-          </div>
+              <FormInput
+                type="textarea"
+                className="md:col-span-2"
+                label="Experience"
+                value={formData.experience}
+                onChange={(e) => updateForm("experience", e.target.value)}
+                disabled={!isEditing}
+              />
 
-          {/* Resume URL */}
-          <div>
-            <label className="block text-sm text-gray-400 mb-1">Resume URL</label>
-            <input
-              type="url"
-              placeholder="https://your-resume-link.com"
-              disabled={!isEditing}
-              className={`w-full p-2 rounded bg-gray-700 text-white border ${
-                isEditing ? "border-blue-500" : "border-gray-700"
-              }`}
-            />
-          </div>
+              <FormInput
+                label="Resume URL"
+                type="url"
+                value={formData.resume_url}
+                onChange={(e) => updateForm("resume_url", e.target.value)}
+                disabled={!isEditing}
+              />
 
-          {/* LinkedIn */}
-          <div>
-            <label className="block text-sm text-gray-400 mb-1">LinkedIn</label>
-            <input
-              type="url"
-              placeholder="https://linkedin.com/in/yourname"
-              disabled={!isEditing}
-              className={`w-full p-2 rounded bg-gray-700 text-white border ${
-                isEditing ? "border-blue-500" : "border-gray-700"
-              }`}
-            />
-          </div>
+              <FormInput
+                label="LinkedIn"
+                type="url"
+                value={formData.linkedin}
+                onChange={(e) => updateForm("linkedin", e.target.value)}
+                disabled={!isEditing}
+              />
 
-          {/* Portfolio */}
-          <div className="md:col-span-2">
-            <label className="block text-sm text-gray-400 mb-1">Portfolio</label>
-            <input
-              type="url"
-              placeholder="https://yourportfolio.com"
-              disabled={!isEditing}
-              className={`w-full p-2 rounded bg-gray-700 text-white border ${
-                isEditing ? "border-blue-500" : "border-gray-700"
-              }`}
-            />
-          </div>
+              <FormInput
+                label="Portfolio"
+                type="url"
+                className="md:col-span-2"
+                value={formData.portfolio}
+                onChange={(e) => updateForm("portfolio", e.target.value)}
+                disabled={!isEditing}
+              />
+            </>
+          )}
+
+          {/* COMPANY FIELDS */}
+          {role === "company" && (
+            <>
+              <FormInput
+                label="Company Name"
+                value={formData.company_name}
+                onChange={(e) => updateForm("company_name", e.target.value)}
+                disabled={!isEditing}
+              />
+
+              <FormInput
+                label="Contact Email"
+                type="email"
+                value={formData.contact_email}
+                onChange={(e) => updateForm("contact_email", e.target.value)}
+                disabled={!isEditing}
+              />
+
+              <FormInput
+                type="textarea"
+                className="md:col-span-2"
+                label="Description"
+                value={formData.description}
+                onChange={(e) => updateForm("description", e.target.value)}
+                disabled={!isEditing}
+              />
+
+              <FormInput
+                label="Industry"
+                value={formData.industry}
+                onChange={(e) => updateForm("industry", e.target.value)}
+                disabled={!isEditing}
+              />
+
+              <FormInput
+                label="Location"
+                value={formData.location}
+                onChange={(e) => updateForm("location", e.target.value)}
+                disabled={!isEditing}
+              />
+
+              <FormInput
+                label="Website"
+                type="url"
+                value={formData.website}
+                onChange={(e) => updateForm("website", e.target.value)}
+                disabled={!isEditing}
+              />
+
+              <FormInput
+                label="Logo URL"
+                type="url"
+                value={formData.logo_url}
+                onChange={(e) => updateForm("logo_url", e.target.value)}
+                disabled={!isEditing}
+              />
+            </>
+          )}
         </form>
 
-        {/* Action Buttons */}
+        {/* BUTTONS */}
         {isEditing && (
           <div className="mt-8 flex justify-end space-x-3">
             <button
-              onClick={() => setIsEditing(false)}
               type="button"
-              className="px-6 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition"
+              onClick={() => setIsEditing(false)}
+              className="px-6 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg"
             >
               Cancel
             </button>
+
             <button
-              type="submit"
-              className="px-6 py-2 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white rounded-lg transition"
+              onClick={saveProfile}
+              className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
             >
               Save Changes
             </button>
           </div>
         )}
-
-        {/* Footer Actions */}
-        <div className="border-t border-gray-700 mt-10 pt-6 flex justify-between items-center">
-          <button className="text-red-400 hover:text-red-300 text-sm font-medium">
-            Delete Account
-          </button>
-          <button className="text-blue-400 hover:text-blue-300 text-sm font-medium">
-            Change Password
-          </button>
-        </div>
       </div>
     </div>
   );
-}
+};
+
+export default ProfilePage;

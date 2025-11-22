@@ -3,8 +3,11 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useSelector,useDispatch } from "react-redux";
+import {setUser} from "@/app/redux/slices/userSlice"
 
 const SignUp = () => {
+  const dispatch = useDispatch();
   const [selectrole, setSelectrole] = useState("candidate");
   const [formData, setFormData] = useState({
     name: "",
@@ -62,6 +65,7 @@ const SignUp = () => {
       const data = await res.json();
       if (res.ok) {
         alert(data.message);
+        dispatch(setUser(data.user))
         router.push("/login");
       } else {
         alert(data.message || "Signup failed");
