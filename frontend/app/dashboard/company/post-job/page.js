@@ -82,7 +82,7 @@ export default function PostJob() {
 
         <input
           type="text"
-          name="salary_range"
+          name="salary"
           placeholder="Salary Range"
           className="border p-2 w-full"
           onChange={handleChange}

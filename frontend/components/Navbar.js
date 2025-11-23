@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
-
+import { useSelector, } from "react-redux";
 export default function Navbar() {
+  const user= useSelector((state) => state.user.user);
   const router = useRouter();
   const pathname = usePathname();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [role, setRole] = useState(null);
-
   // Check login status via cookie (call /api/profile)
   const checkAuth = async () => {
     try {
@@ -71,10 +71,10 @@ export default function Navbar() {
         ) : (
           <>
             <button
-              onClick={() => router.push("/jobs")}
+              onClick={() => router.push(`${user.role==="candidate"?"/dashboard/candidate":"/dashboard/company"}`)}
               className="hover:text-blue-400"
             >
-              Jobs
+              DashBoard
             </button>
             <button
               onClick={() => router.push("/profile")}
@@ -83,7 +83,7 @@ export default function Navbar() {
               Profile
             </button>
 
-            {role === "recruiter" && (
+            {user?.role === "company" && (
               <button
                 onClick={() => router.push("/post-job")}
                 className="hover:text-blue-400"

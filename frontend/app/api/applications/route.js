@@ -16,6 +16,7 @@ export async function POST(req) {
     }
 
     const decoded = jwt.verify(token, "secret123");
+    console.log("decoded:", decoded);
     const userId = decoded.id;
 
     // ensure user is a candidate
@@ -79,6 +80,7 @@ export async function GET(req) {
     }
 
     const decoded = jwt.verify(token, "secret123");
+    console.log("decoded", decoded);
     const userId = decoded.id;
 
     // Find role
@@ -96,12 +98,18 @@ export async function GET(req) {
       );
       const candidate_id = candidate[0].id;
 
+      // const [apps] = await connectDB.query(
+      //   `SELECT applications.*, jobs.title, jobs.location, jobs.job_type
+      //    FROM applications
+      //    JOIN jobs ON jobs.id = applications.job_id
+      //    WHERE applications.candidate_id = ?
+      //    ORDER BY applications.applied_at DESC`,
+      //   [candidate_id]
+      // );
       const [apps] = await connectDB.query(
-        `SELECT applications.*, jobs.title, jobs.location, jobs.job_type
-         FROM applications
-         JOIN jobs ON jobs.id = applications.job_id
-         WHERE applications.candidate_id = ?
-         ORDER BY applications.applied_at DESC`,
+        `SELECT * FROM candidate_applications 
+   WHERE candidate_id = ? 
+   ORDER BY applied_at DESC`,
         [candidate_id]
       );
 
@@ -139,12 +147,18 @@ export async function GET(req) {
         );
       }
 
+      // const [apps] = await connectDB.query(
+      //   `SELECT applications.*, candidates.name, candidates.email
+      //    FROM applications
+      //    JOIN candidates ON candidates.id = applications.candidate_id
+      //    WHERE applications.job_id = ?
+      //    ORDER BY applications.applied_at DESC`,
+      //   [jobId]
+      // );
       const [apps] = await connectDB.query(
-        `SELECT applications.*, candidates.name, candidates.email
-         FROM applications
-         JOIN candidates ON candidates.id = applications.candidate_id
-         WHERE applications.job_id = ?
-         ORDER BY applications.applied_at DESC`,
+        `SELECT * FROM job_applicants
+   WHERE job_id = ?
+   ORDER BY applied_at DESC`,
         [jobId]
       );
 

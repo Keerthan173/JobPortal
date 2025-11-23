@@ -29,10 +29,10 @@ export default function Login() {
       // ✅ Role-based redirect
       switch (data.user.role) {
         case "company":
-          router.push("/hr-dashboard");
+          router.push("/dashboard/company");
           break;
         case "candidate":
-          router.push("/candidate-dashboard");
+          router.push("/dashboard/candidate");
           break;
         default:
           router.push("/");
