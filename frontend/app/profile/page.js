@@ -49,7 +49,6 @@ const ProfilePage = () => {
   // Redux user
   
   const user = useSelector((state) => state.user.user);
-  console.log(user);
   const [role, setRole] = useState("candidate");
   // prevent crash → safe empty object
   const [formData, setFormData] = useState({});
@@ -82,6 +81,7 @@ const ProfilePage = () => {
         alert("Error updating profile");
         return;
       }
+      console.log(formData)
 
       // Update redux with new data
       dispatch(setUser({ ...user, profile: formData }));
@@ -202,7 +202,7 @@ const ProfilePage = () => {
               <FormInput
                 label="Contact Email"
                 type="email"
-                value={formData.contact_email}
+                value={formData.contact_email||user.email}
                 onChange={(e) => updateForm("contact_email", e.target.value)}
                 disabled={!isEditing}
               />
