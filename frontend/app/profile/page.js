@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setUser } from "../redux/slices/userSlice";
+import { User, Building2, Pencil, Save, X } from "lucide-react"; // ⬅ added icons
 
 // Reusable input component
 const FormInput = ({
@@ -24,9 +25,9 @@ const FormInput = ({
         value={value || ""}
         onChange={onChange}
         disabled={disabled}
-        className={`w-full p-2 rounded bg-gray-700 text-white border ${
+        className={`w-full p-3 rounded-xl bg-gray-700 text-white border ${
           disabled ? "border-gray-700" : "border-blue-500"
-        }`}
+        } focus:ring focus:ring-blue-600 focus:outline-none`}
       />
     ) : (
       <input
@@ -35,9 +36,9 @@ const FormInput = ({
         value={value || ""}
         onChange={onChange}
         disabled={disabled}
-        className={`w-full p-2 rounded bg-gray-700 text-white border ${
+        className={`w-full p-3 rounded-xl bg-gray-700 text-white border ${
           disabled ? "border-gray-700" : "border-blue-500"
-        }`}
+        } focus:ring focus:ring-blue-600 focus:outline-none`}
       />
     )}
   </div>
@@ -46,29 +47,24 @@ const FormInput = ({
 const ProfilePage = () => {
   const dispatch = useDispatch();
 
-  // Redux user
-  
   const user = useSelector((state) => state.user.user);
   const [role, setRole] = useState("candidate");
-  // prevent crash → safe empty object
+
   const [formData, setFormData] = useState({});
 
   const updateForm = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  // Load fresh data into formData when Redux user changes
   useEffect(() => {
     if (user?.profile) {
       setFormData(user.profile);
-       setRole(user.role);
+      setRole(user.role);
     }
-    console.log("form data",formData);
   }, [user]);
 
   const [isEditing, setIsEditing] = useState(false);
 
-  // ---------------- SAVE PROFILE ----------------
   const saveProfile = async () => {
     try {
       const res = await fetch("/api/profile", {
@@ -81,9 +77,7 @@ const ProfilePage = () => {
         alert("Error updating profile");
         return;
       }
-      console.log(formData)
 
-      // Update redux with new data
       dispatch(setUser({ ...user, profile: formData }));
       setIsEditing(false);
       alert("Profile updated!");
@@ -92,7 +86,6 @@ const ProfilePage = () => {
     }
   };
 
-  // ---------------- PREVENT WHITE SCREEN ----------------
   if (!user) {
     return (
       <div className="text-white text-center p-10 text-xl">
@@ -102,25 +95,34 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 py-10 px-4">
-      <div className="max-w-5xl mx-auto bg-gray-800 rounded-2xl shadow-lg border border-gray-700 p-8">
+    <div className="min-h-screen bg-gray-900 py-10 px-5">
+      <div className="max-w-5xl mx-auto bg-gray-800 rounded-2xl shadow-xl border border-gray-700 p-10 backdrop-blur-xl">
         {/* HEADER */}
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-white">
-            {role === "candidate" ? "Candidate Profile" : "Company Profile"}
-          </h1>
+        <div className="flex items-center justify-between mb-10">
+          <div className="flex items-center space-x-3">
+            {role === "candidate" ? (
+              <User className="w-8 h-8 text-blue-400" />
+            ) : (
+              <Building2 className="w-8 h-8 text-blue-400" />
+            )}
+
+            <h1 className="text-3xl font-bold text-white">
+              {role === "candidate" ? "Candidate Profile" : "Company Profile"}
+            </h1>
+          </div>
 
           <button
             onClick={() => setIsEditing(!isEditing)}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md"
           >
+            <Pencil size={18} />
             {isEditing ? "Cancel" : "Edit"}
           </button>
         </div>
 
-        {/* FORM ---------------------------- */}
+        {/* FORM */}
         <form className="grid md:grid-cols-2 gap-6">
-          {/* CANDIDATE FIELDS */}
+          {/* Candidate Fields */}
           {role === "candidate" && (
             <>
               <FormInput
@@ -134,7 +136,6 @@ const ProfilePage = () => {
                 label="Email"
                 type="email"
                 value={user.email}
-                onChange={(e) => updateForm("email", e.target.value)}
                 disabled={!isEditing}
               />
 
@@ -189,7 +190,7 @@ const ProfilePage = () => {
             </>
           )}
 
-          {/* COMPANY FIELDS */}
+          {/* Company Fields */}
           {role === "company" && (
             <>
               <FormInput
@@ -202,7 +203,7 @@ const ProfilePage = () => {
               <FormInput
                 label="Contact Email"
                 type="email"
-                value={formData.contact_email||user.email}
+                value={formData.contact_email || user.email}
                 onChange={(e) => updateForm("contact_email", e.target.value)}
                 disabled={!isEditing}
               />
@@ -249,21 +250,23 @@ const ProfilePage = () => {
           )}
         </form>
 
-        {/* BUTTONS */}
+        {/* ACTION BUTTONS */}
         {isEditing && (
-          <div className="mt-8 flex justify-end space-x-3">
+          <div className="mt-10 flex justify-end space-x-4">
             <button
               type="button"
               onClick={() => setIsEditing(false)}
-              className="px-6 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg"
+              className="flex items-center gap-2 px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-xl shadow-md"
             >
+              <X size={18} />
               Cancel
             </button>
 
             <button
               onClick={saveProfile}
-              className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
+              className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md"
             >
+              <Save size={18} />
               Save Changes
             </button>
           </div>

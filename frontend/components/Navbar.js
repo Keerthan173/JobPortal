@@ -85,7 +85,7 @@ export default function Navbar() {
 
             {user?.role === "company" && (
               <button
-                onClick={() => router.push("/post-job")}
+                onClick={() => router.push("/dashboard/company/post-job")}
                 className="hover:text-blue-400"
               >
                 Post Job
