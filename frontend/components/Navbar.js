@@ -71,7 +71,7 @@ export default function Navbar() {
         ) : (
           <>
             <button
-              onClick={() => router.push(`${user.role==="candidate"?"/dashboard/candidate":"/dashboard/company"}`)}
+              onClick={() => router.push(`${user?.role==="candidate"?"/dashboard/candidate":"/dashboard/company"}`)}
               className="hover:text-blue-400"
             >
               DashBoard

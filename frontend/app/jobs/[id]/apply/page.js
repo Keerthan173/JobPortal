@@ -71,7 +71,7 @@ export default function ApplyJob({ params }) {
           </div>
 
           {/* Submit Button */}
-          <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl flex items-center justify-center gap-2 transition shadow">
+          <button onClick={()=>router.push("/dashboard/candidate/applications")} className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl flex items-center justify-center gap-2 transition shadow">
             <Send size={18} /> Submit Application
           </button>
         </form>

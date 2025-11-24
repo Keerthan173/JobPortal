@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState,use } from "react";
 import {
   Briefcase,
   MapPin,
@@ -8,6 +8,7 @@ import {
   Pencil,
   IndianRupee,
   CalendarDays,
+  Users,
 } from "lucide-react";
 
 export default function ManageJobs() {
@@ -38,7 +39,7 @@ export default function ManageJobs() {
   if (loading) return <p className="p-6">Loading...</p>;
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
+    <div className="p-6 max-w-5xl mx-auto">
       <h2 className="text-3xl font-bold mb-6">Manage Jobs</h2>
 
       {jobs.length === 0 ? (
@@ -48,38 +49,36 @@ export default function ManageJobs() {
           {jobs.map((job) => (
             <div
               key={job.id}
-              className="border rounded-xl p-5 shadow bg-white hover:shadow-md transition"
+              className="border rounded-xl p-6 shadow bg-white hover:shadow-lg transition-all duration-200"
             >
-              {/* TITLE */}
-              <h3 className="text-xl font-semibold flex items-center gap-2 mb-3">
-                <Briefcase size={20} className="text-blue-600" />
-                {job.title}
-              </h3>
+              {/* Job Title */}
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-xl font-semibold flex items-center gap-2">
+                  <Briefcase size={22} className="text-blue-600" />
+                  {job.title}
+                </h3>
+              </div>
 
-              {/* DETAILS */}
-              <div className="grid md:grid-cols-2 gap-3 text-sm">
-                {/* Location */}
+              {/* Job Details */}
+              <div className="grid md:grid-cols-2 gap-4 text-sm mb-5">
                 <div className="flex items-center gap-2">
                   <MapPin size={18} className="text-gray-600" />
                   <span className="font-semibold">Location:</span>{" "}
                   {job.location}
                 </div>
 
-                {/* Salary */}
                 <div className="flex items-center gap-2">
                   <IndianRupee size={18} className="text-gray-600" />
                   <span className="font-semibold">Salary:</span>{" "}
                   {job.salary || "Not specified"}
                 </div>
 
-                {/* Job Type */}
                 <div className="flex items-center gap-2">
                   <Briefcase size={18} className="text-gray-600" />
                   <span className="font-semibold">Type:</span>{" "}
                   {job.job_type || "N/A"}
                 </div>
 
-                {/* Posted On */}
                 <div className="flex items-center gap-2">
                   <CalendarDays size={18} className="text-gray-600" />
                   <span className="font-semibold">Posted:</span>{" "}
@@ -87,8 +86,18 @@ export default function ManageJobs() {
                 </div>
               </div>
 
-              {/* ACTION BUTTONS */}
-              <div className="mt-5 flex justify-end gap-3">
+              {/* Action Buttons */}
+              <div className="flex flex-wrap justify-end gap-3 pt-3 border-t">
+                {/* View Applicants */}
+                <a
+                  href={`/dashboard/company/manage-jobs/${job.id}`}
+                  className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition"
+                >
+                  <Users size={18} />
+                  View Applicants
+                </a>
+
+                {/* Edit */}
                 <a
                   href={`/dashboard/company/edit-job/${job.id}`}
                   className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition"
@@ -97,6 +106,7 @@ export default function ManageJobs() {
                   Edit
                 </a>
 
+                {/* Delete */}
                 <button
                   onClick={async () => {
                     await fetch("/api/jobs", {

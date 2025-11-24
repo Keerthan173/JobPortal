@@ -1,6 +1,7 @@
-'use client';
-
+"use client";
+import { useRouter } from "next/navigation";
 export default function Home() {
+  const router = useRouter();
   return (
     <div className="min-h-screen bg-gray-900">
       {/* Hero Section */}
@@ -10,7 +11,8 @@ export default function Home() {
             Find Your Dream Job Today
           </h1>
           <p className="text-xl md:text-2xl mb-8 text-gray-300">
-            Connect with top employers and discover opportunities that match your skills
+            Connect with top employers and discover opportunities that match
+            your skills
           </p>
         </div>
       </section>
@@ -24,23 +26,32 @@ export default function Home() {
           <div className="grid md:grid-cols-3 gap-8">
             <div className="bg-gray-800 p-6 rounded-lg shadow-xl border border-gray-700 hover:border-blue-500 transition">
               <div className="text-blue-400 text-4xl mb-4">💼</div>
-              <h3 className="text-xl font-semibold mb-3 text-white">Thousands of Jobs</h3>
+              <h3 className="text-xl font-semibold mb-3 text-white">
+                Thousands of Jobs
+              </h3>
               <p className="text-gray-400">
-                Access thousands of job listings from top companies across various industries
+                Access thousands of job listings from top companies across
+                various industries
               </p>
             </div>
             <div className="bg-gray-800 p-6 rounded-lg shadow-xl border border-gray-700 hover:border-blue-500 transition">
               <div className="text-blue-400 text-4xl mb-4">⚡</div>
-              <h3 className="text-xl font-semibold mb-3 text-white">Easy Application</h3>
+              <h3 className="text-xl font-semibold mb-3 text-white">
+                Easy Application
+              </h3>
               <p className="text-gray-400">
-                Apply to multiple jobs with one click. Save time with our streamlined process
+                Apply to multiple jobs with one click. Save time with our
+                streamlined process
               </p>
             </div>
             <div className="bg-gray-800 p-6 rounded-lg shadow-xl border border-gray-700 hover:border-blue-500 transition">
               <div className="text-blue-400 text-4xl mb-4">🎯</div>
-              <h3 className="text-xl font-semibold mb-3 text-white">Smart Matching</h3>
+              <h3 className="text-xl font-semibold mb-3 text-white">
+                Smart Matching
+              </h3>
               <p className="text-gray-400">
-                Get personalized job recommendations based on your skills and preferences
+                Get personalized job recommendations based on your skills and
+                preferences
               </p>
             </div>
           </div>
@@ -54,17 +65,18 @@ export default function Home() {
             Ready to Take the Next Step?
           </h2>
           <p className="text-xl mb-8 text-blue-200">
-            Join thousands of job seekers who found their dream job through our platform
+            Join thousands of job seekers who found their dream job through our
+            platform
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button 
-              onClick={() => window.location.href = '/signup'}
+            <button
+              onClick={() => router.push("/signup")}
               className="bg-white text-blue-600 px-8 py-3 rounded-md font-semibold hover:bg-gray-100 transition shadow-lg"
             >
               Create Account
             </button>
-            <button 
-              onClick={() => window.location.href = '/login'}
+            <button
+              onClick={() => router.push("/signup")}
               className="border-2 border-blue-400 text-blue-400 px-8 py-3 rounded-md font-semibold hover:bg-blue-400 hover:text-white transition"
             >
               Login
