@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import Image from "next/image";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -45,6 +46,7 @@ export default function Login() {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="flex ">
       <form
         onSubmit={handleLogin}
         className="p-7 w-96 shadow-md bg-white rounded-lg"
@@ -83,6 +85,15 @@ export default function Login() {
           </Link>
         </p>
       </form>
+      <div className="flex min-h-full justify-center items-center bg-white">
+        <Image
+          src="/images/loginPageBG1.jpg"
+          width={300}
+          height={300}
+          alt="Login page image"
+        />
+      </div>
+      </div>
     </div>
   );
 }

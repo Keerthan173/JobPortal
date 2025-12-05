@@ -21,7 +21,7 @@ export default function PostJob() {
     requirements: "",
     location: "",
     salary: "",
-    type: "job",
+    job_type: "full-time",
     deadline: "",
   });
 
@@ -128,8 +128,11 @@ export default function PostJob() {
             className="w-full outline-none bg-transparent"
             onChange={handleChange}
           >
-            <option value="job">Job</option>
-            <option value="internship">Internship</option>
+            <option value="full-time">full-time</option>
+            <option value="part-time">part-time</option>
+            <option value="remote">remote</option>
+            <option value="contract">contract</option>
+            <option value="remote">remote</option>
           </select>
         </div>
 

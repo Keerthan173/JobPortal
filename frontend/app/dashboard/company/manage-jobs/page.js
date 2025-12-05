@@ -25,6 +25,7 @@ export default function ManageJobs() {
 
         const data = await res.json();
         console.log("data from manage-jobs", data);
+        console.log("jobs data",data);
         setJobs(data);
       } catch (err) {
         console.error("Error fetching jobs:", err);

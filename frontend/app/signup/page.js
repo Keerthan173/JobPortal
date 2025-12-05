@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSelector,useDispatch } from "react-redux";
 import {setUser} from "@/app/redux/slices/userSlice"
+import Image from "next/image";
 
 const SignUp = () => {
   const dispatch = useDispatch();
@@ -77,7 +78,8 @@ const SignUp = () => {
   };
 
   return (
-    <div className="flex items-center justify-center bg-gray-100 min-h-screen">
+    <div className="flex items-center justify-center bg-gray-100 min-h-screen ">
+      <div className="flex ">
       <form
         onSubmit={handleSignup}
         className="p-7 w-96 shadow-md bg-white rounded-lg"
@@ -234,6 +236,15 @@ const SignUp = () => {
           </Link>
         </p>
       </form>
+      <div className="flex min-h-full justify-center items-center bg-white">
+      <Image
+      src="/images/loginPageBG.jpg"
+      width={500}
+      height={500}
+      alt="Login page image"
+      />
+      </div>
+    </div>
     </div>
   );
 };

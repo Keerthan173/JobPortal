@@ -28,14 +28,15 @@ export async function POST(req) {
       );
 
     const company_id = company[0].id;
-
+    // console.log("body:", body);
     await connectDB.query(
-      `INSERT INTO jobs (company_id, title, description, location, salary, job_type)
-       VALUES (?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO jobs (company_id, title, description,requirements, location, salary, job_type)
+       VALUES (?, ?, ?, ?, ?, ?,?)`,
       [
         company_id,
         body.title,
         body.description,
+        body.requirement,
         body.location,
         body.salary,
         body.job_type,
