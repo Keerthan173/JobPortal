@@ -10,7 +10,7 @@ export default function ApplyJob({ params }) {
 
   const [resumeUrl, setResumeUrl] = useState("");
   const [coverLetter, setCoverLetter] = useState("");
-
+  
   async function handleSubmit(e) {
     e.preventDefault();
 
@@ -45,7 +45,7 @@ export default function ApplyJob({ params }) {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Resume Field */}
           <div>
-            <label className="block mb-1 font-medium flex items-center gap-2">
+            <label className=" mb-1 font-medium flex items-center gap-2">
               <Upload size={18} /> Resume URL
             </label>
             <input

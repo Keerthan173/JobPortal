@@ -42,6 +42,7 @@ export async function GET() {
     }
     const candidate_id = candidate_id_rows[0].id;
     // Call the stored procedure
+    console.log("candidate id:",candidate_id);
     const [results] = await connectDB.query("CALL candidate_dashboard(?)", [
       candidate_id,
     ]);

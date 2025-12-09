@@ -20,10 +20,10 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
         <Providers>
-        <NavbarWrapper/>
-        <UserLoader/>
-        <main>{children}</main>
-        {/* <Footer/> */}
+          <UserLoader />
+          <NavbarWrapper />
+          <main>{children}</main>
+          {/* <Footer/> */}
         </Providers>
       </body>
     </html>

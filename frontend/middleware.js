@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 export function middleware(req) {
   const token = req.cookies.get("token")?.value;
-  const protectedRoutes = ["profile", "hr-dashboard", "candidate-dashboard"];
+  const protectedRoutes = ["profile", "dashboard", "jobs"];
   if (protectedRoutes.some((path) => req.nextUrl.pathname.startsWith(path))) {
     if (!token) {
       return NextResponse.redirect(new URL("/login", req.url));

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useSelector} from "react-redux";
 import Link from "next/link";
 import {
   FileText,
@@ -13,6 +14,8 @@ import {
 } from "lucide-react";
 
 export default function CandidateDashboard() {
+  const user = useSelector((state) => state.user.user);
+  // console.log("user",user?.profile.name);
   const router = useRouter();
   const [stats, setStats] = useState([]);
   const [recentApps, setRecentApps] = useState([]);
@@ -26,6 +29,7 @@ export default function CandidateDashboard() {
           credentials: "include",
         });
         const data = await res.json();
+        console.log("data from dashboard", data);
 
         // Quick Stats
         setStats([
@@ -94,7 +98,7 @@ export default function CandidateDashboard() {
     <div className="p-6 md:p-10 max-w-5xl mx-auto">
       {/* Title */}
       <h1 className="text-3xl font-bold mb-6">
-        Welcome, {profile.candidate_name || ""}
+        Welcome, {user?.profile.name || ""}
       </h1>
 
       {/* QUICK STATS */}

@@ -1,14 +1,15 @@
 "use client";
 
-import { useEffect, useState,use } from "react";
+import { useEffect, useState, use } from "react";
 import { User, Mail, Calendar, FileText } from "lucide-react";
-
+import CandidateDetails from "@/components/CandidateDetails";
 export default function JobApplicants({ params }) {
   const { id } = use(params); // ← NEW FIX ✅
 
   const jobId = id;
   const [applicants, setApplicants] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedCandidate, setSelectedCandidate] = useState(null);
 
   useEffect(() => {
     async function fetchApplicants() {
@@ -40,7 +41,6 @@ export default function JobApplicants({ params }) {
       credentials: "include",
     });
 
-    // refresh UI
     setApplicants((prev) =>
       prev.map((a) =>
         a.application_id === appId ? { ...a, status: newStatus } : a
@@ -51,7 +51,7 @@ export default function JobApplicants({ params }) {
   if (loading) return <p className="p-6">Loading applicants...</p>;
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
+    <div className="p-6 max-w-5xl mx-auto">
       <h1 className="text-2xl font-bold mb-6">Applicants for Job #{jobId}</h1>
 
       {applicants.length === 0 ? (
@@ -64,12 +64,11 @@ export default function JobApplicants({ params }) {
               className="border shadow p-5 rounded-lg bg-white"
             >
               <h2 className="text-xl font-semibold flex items-center gap-2">
-                <User />
-                {a.candidate_name}
+                <User /> {a.candidate_name}
               </h2>
 
               <p className="flex items-center gap-2 text-gray-700 mt-2">
-                <Mail size={18} /> {a.email}
+                <Mail size={18} /> {a.candidate_email}
               </p>
 
               <p className="flex items-center gap-2 text-gray-700">
@@ -82,7 +81,7 @@ export default function JobApplicants({ params }) {
               </p>
 
               {/* ACTION BUTTONS */}
-              <div className="flex gap-3 mt-4">
+              <div className="flex gap-3 mt-4 flex-wrap">
                 <button
                   onClick={() => updateStatus(a.application_id, "reviewed")}
                   className="px-3 py-1 bg-yellow-500 text-white rounded"
@@ -103,10 +102,30 @@ export default function JobApplicants({ params }) {
                 >
                   Reject
                 </button>
+
+                <button
+                  onClick={() =>
+                    setSelectedCandidate({
+                      candidateId: a.candidate_id,
+                      jobId: jobId,
+                    })
+                  }
+                  className="px-3 py-1 bg-blue-600 text-white rounded"
+                >
+                  View Details
+                </button>
               </div>
             </div>
           ))}
         </div>
+      )}
+
+      {/* ✅ Candidate Details Section */}
+      {selectedCandidate && (
+        <CandidateDetails
+          jobId={selectedCandidate.jobId}
+          candidateId={selectedCandidate.candidateId}
+        />
       )}
     </div>
   );
